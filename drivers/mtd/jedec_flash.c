@@ -384,6 +384,23 @@ static const struct amd_flash_info jedec_table[] = {
 		}
 	},
 	{
+		.mfr_id		= (u16)AMD_MANUFACT,
+		.dev_id		= AM29LV160DB,
+		.name		= "AMD AM29LV160DB",
+		.uaddr		= {
+			[1] = MTD_UADDR_0x0555_0x02AA /* x16 */
+		},
+		.DevSize	= SIZE_2MiB,
+		.CmdSet		= CFI_CMDSET_AMD_LEGACY,
+		.NumEraseRegions= 4,
+		.regions	= {
+            ERASEINFO(0x04000, 1),
+            ERASEINFO(0x02000, 2),
+            ERASEINFO(0x08000, 1),
+            ERASEINFO(0x10000, 31),
+		}
+	},
+	{
 		.mfr_id		= (u16)STM_MANUFACT,
 		.dev_id		= STM29F400BB,
 		.name		= "ST Micro M29F400BB",

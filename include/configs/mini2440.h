@@ -38,9 +38,17 @@
 /*
  * Hardware drivers
  */
-#define CONFIG_CS8900		/* we have a CS8900 on-board */
-#define CONFIG_CS8900_BASE	0x19000300
-#define CONFIG_CS8900_BUS16	/* the Linux driver does accesses as shorts */
+/*#define CONFIG_CS8900	*/	/* we have a CS8900 on-board */
+/*#define CONFIG_CS8900_BASE	0x19000300 */
+/*#define CONFIG_CS8900_BUS16 */	/* the Linux driver does accesses as shorts */
+#define CONFIG_DRIVER_DM9000
+#define CONFIG_DM9000_NO_SROM       //not use the dm9000 eeprom
+#define CONFIG_NET_RANDOM_ETHADDR   //set the ethaddr
+#define CONFIG_LIB_RAND             //random_ethadd need rand function
+#define CONFIG_DM9000_BASE          0x20000000
+#define DM9000_IO                   CONFIG_DM9000_BASE      
+#define DM9000_DATA                 (CONFIG_DM9000_BASE + 4 ) //data address
+
 
 /*
  * select serial console configuration
@@ -89,8 +97,8 @@
 #define CONFIG_ZERO_BOOTDELAY_CHECK
 
 #define CONFIG_NETMASK		255.255.255.0
-#define CONFIG_IPADDR		10.0.0.110
-#define CONFIG_SERVERIP		10.0.0.1
+#define CONFIG_IPADDR		192.168.50.110
+#define CONFIG_SERVERIP		192.168.50.1
 
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	115200	/* speed to run kgdb serial port */
@@ -142,7 +150,9 @@
 
 #define CONFIG_SYS_MAX_FLASH_BANKS	1
 #define CONFIG_SYS_FLASH_BANKS_LIST     { CONFIG_SYS_FLASH_BASE }
-#define CONFIG_SYS_MAX_FLASH_SECT	(19)
+/* AM29LV160B */
+/* One 16Kbyte, Two 8Kbytes, One 32Kbytes and Thirty-One 64Kbytes */
+#define CONFIG_SYS_MAX_FLASH_SECT	(35)
 
 #define CONFIG_ENV_ADDR			(CONFIG_SYS_FLASH_BASE + 0x070000)
 #define CONFIG_ENV_IS_IN_FLASH
@@ -163,8 +173,8 @@
  * NAND configuration
  */
 #ifdef CONFIG_CMD_NAND
-#define CONFIG_NAND_S3C2410
-#define CONFIG_SYS_S3C2410_NAND_HWECC
+#define CONFIG_NAND_S3C2440
+#define CONFIG_SYS_S3C2440_NAND_HWECC
 #define CONFIG_SYS_MAX_NAND_DEVICE	1
 #define CONFIG_SYS_NAND_BASE		0x4E000000
 #endif

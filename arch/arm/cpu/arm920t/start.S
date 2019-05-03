@@ -78,13 +78,60 @@ copyex:
 	ldr	r1, =0x3ff
 	ldr	r0, =INTSUBMSK
 	str	r1, [r0]
+# elif defined(CONFIG_S3C2440)
+	ldr	r1, =0x7fff
+	ldr	r0, =INTSUBMSK
+	str	r1, [r0]
 # endif
 
 	/* FCLK:HCLK:PCLK = 1:2:4 */
 	/* default FCLK is 120 MHz ! */
+#if defined(CONFIG_S3C2440)
+    #define MPLLCON 0x4C000004
+    #define UPLLCON 0x4C000008
+
+    #define S3C2440_MPLL_400M ((92 << 12) | (1 << 4) | (1))
+    #define S3C2440_UPLL_48M  ((56 << 12) | (2 << 4) | (2))         
+
+    /* FCLK:HCLK:PCLK = 1:4:8 */
+    ldr     r0, =CLKDIVN
+    mov     r1, #5
+    str     r1, [r0]
+
+    /* MMU Set Async Bus Mode */
+    mrc     p15, 0, r0, c1, c0, 0
+    orr     r0, r0, #0xC0000000
+    mcr     p15, 0, r0, c1, c0, 0
+
+    /* Set PLL */
+    ldr     r0, =MPLLCON
+    ldr     r1, =S3C2440_MPLL_400M
+    str     r1, [r0]
+
+    /* Some delay between MPLL and UPLL */
+    mov     r0, #(1 << 13)
+    mov     r1, #0
+1:
+    subs    r0, r0, #1
+    cmp     r0, r1
+    bne     1b
+
+    ldr     r0, =UPLLCON
+    ldr     r1, =S3C2440_UPLL_48M
+    str     r1, [r0]
+
+    /* Some delay */
+    mov     r0, #(1 << 14)
+    mov     r1, #0
+2:
+    subs    r0, r0, #1
+    cmp     r0, r1
+    bne     2b
+#else
 	ldr	r0, =CLKDIVN
 	mov	r1, #3
 	str	r1, [r0]
+#endif
 #endif	/* CONFIG_S3C24X0 */
 
 	/*

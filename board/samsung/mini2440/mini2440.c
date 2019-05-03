@@ -40,12 +40,6 @@ DECLARE_GLOBAL_DATA_PTR;
 #define U_M_SDIV	0x2
 #endif
 
-static inline void pll_delay(unsigned long loops)
-{
-	__asm__ volatile ("1:\n"
-	  "subs %0, %1, #1\n"
-	  "bne 1b" : "=r" (loops) : "0" (loops));
-}
 
 /*
  * Miscellaneous platform dependent initialisations
@@ -53,26 +47,7 @@ static inline void pll_delay(unsigned long loops)
 
 int board_early_init_f(void)
 {
-	struct s3c24x0_clock_power * const clk_power =
-					s3c24x0_get_base_clock_power();
 	struct s3c24x0_gpio * const gpio = s3c24x0_get_base_gpio();
-
-	/* to reduce PLL lock time, adjust the LOCKTIME register */
-	writel(0xFFFFFF, &clk_power->locktime);
-
-	/* configure MPLL */
-	writel((M_MDIV << 12) + (M_PDIV << 4) + M_SDIV,
-	       &clk_power->mpllcon);
-
-	/* some delay between MPLL and UPLL */
-	pll_delay(4000);
-
-	/* configure UPLL */
-	writel((U_M_MDIV << 12) + (U_M_PDIV << 4) + U_M_SDIV,
-	       &clk_power->upllcon);
-
-	/* some delay between MPLL and UPLL */
-	pll_delay(8000);
 
 	/* set up the I/O ports */
 	writel(0x007FFFFF, &gpio->gpacon);
@@ -122,6 +97,9 @@ int board_eth_init(bd_t *bis)
 	int rc = 0;
 #ifdef CONFIG_CS8900
 	rc = cs8900_initialize(0, CONFIG_CS8900_BASE);
+#endif
+#ifdef CONFIG_DRIVER_DM9000
+    rc = dm9000_initialize(bis);
 #endif
 	return rc;
 }
