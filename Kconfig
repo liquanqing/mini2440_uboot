@@ -103,7 +103,8 @@ endmenu		# General setup
 menu "Boot images"
 
 config SUPPORT_SPL
-	bool
+	bool "Support SPL"
+	default y
 
 config SUPPORT_TPL
 	bool
