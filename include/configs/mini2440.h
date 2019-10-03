@@ -139,6 +139,14 @@
 #define CONFIG_SYS_FLASH_BASE	PHYS_FLASH_1
 
 /*-----------------------------------------------------------------------
+ * SPL boot
+ */
+#ifdef CONFIG_SPL_BUILD
+#define CONFIG_SPL_NAND_BOOT
+#define CONFIG_SPL_MAX_SIZE 	(4096)
+#endif
+
+/*-----------------------------------------------------------------------
  * FLASH and environment organization
  */
 

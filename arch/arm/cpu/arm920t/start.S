@@ -139,7 +139,9 @@ copyex:
 	 * not when booting from ram!
 	 */
 #ifndef CONFIG_SKIP_LOWLEVEL_INIT
+#if defined(CONFIG_SPL_BUILD)
 	bl	cpu_init_crit
+#endif
 #endif
 
 	bl	_main

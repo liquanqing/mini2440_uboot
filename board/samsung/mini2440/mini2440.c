@@ -13,6 +13,14 @@
 #include <netdev.h>
 #include <asm/io.h>
 #include <asm/arch/s3c24x0_cpu.h>
+#include <elf.h>
+#include <asm/sections.h>
+
+
+#include <config.h>
+#include <spl.h>
+#include <image.h>
+#include <linux/compiler.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -116,3 +124,67 @@ ulong board_flash_get_legacy(ulong base, int banknum, flash_info_t *info)
 	info->interface = FLASH_CFI_X16;
 	return 1;
 }
+
+#define        GPHCON                              (*(volatile unsigned long *)0x56000070)
+#define        GPHDAT                              (*(volatile unsigned long *)0x56000074)
+#define        GPHUP                                 (*(volatile unsigned long *)0x56000078)
+
+#define        ULCON0                               (*(volatile unsigned long *)0x50000000)
+#define        UCON0                                 (*(volatile unsigned long *)0x50000004)
+#define        UFCON0                            (*(volatile unsigned long *)0x50000008)
+#define        UMCON0                             (*(volatile unsigned long *)0x5000000c)
+#define        UTRSTAT0                           (*(volatile unsigned long *)0x50000010)
+#define        UTXH0                                (*(volatile unsigned char *)0x50000020)
+#define        URXH0                               (*(volatile unsigned char *)0x50000024)
+#define        UBRDIV0                             (*(volatile unsigned long *)0x50000028)
+
+/* use userial for test */
+void init_uart()
+{
+   /*初始化端口*/
+   GPHCON |= (0x2 << 6 | 0x2 << 4);
+   GPHUP  |= 0x3 << 2;
+   
+   /*波特率115200，无奇偶校验，1位停止位*/
+   ULCON0 |= 0x3;
+   UCON0  |= (0x1 << 2 | 0x1 << 0);
+   UBRDIV0 = 26;
+}
+ 
+/*接收一个字符*/
+char getchar()
+{
+  while(!(UTRSTAT0 & (0x1 << 0)));
+  return URXH0;
+}
+ 
+/*发送一个字符*/
+void outchar(char c)
+{
+  while(!(UTRSTAT0 & (0x1 << 2)));
+  UTXH0 = c;
+}
+ 
+/*发送一个字符串*/
+void outstring(char* str)
+{
+  while(*str)
+  {
+    outchar(*str++);
+  }
+}
+
+#ifdef CONFIG_SPL_BUILD
+void board_init_r(gd_t *dummy1, ulong dummy2)
+{
+	init_uart();
+
+	outstring("hello !This is SPL booting");
+	while(1);
+}
+
+void board_init_f(ulong dummy)
+{
+	board_init_r(NULL, 0);
+}
+#endif
