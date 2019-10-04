@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #
 # NOTE! Don't add files that are generated in specific
 # subdirectories here. Add them in the ".gitignore" file
@@ -84,3 +85,57 @@ GTAGS
 *.orig
 *~
 \#*#
+=======
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+>>>>>>> f08f98e52b817a32566f55cc59eb942bf36f79fa
