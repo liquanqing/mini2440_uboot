@@ -3,7 +3,7 @@
 
 if [ "$1" = "build" ];then
 echo "only build begin"
-make ARCH=arm CROSS_COMPILE=arm-s3c2440-linux-gnueabi- V=S
+make ARCH=arm CROSS_COMPILE=arm-s3c2440-linux-gnueabi- V=S && gcc -o merge_mini2440 merge_spl_mini2440.c && ./merge_mini2440
 echo "######################"
 echo "     script end       "
 echo "######################"

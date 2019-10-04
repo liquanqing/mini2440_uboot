@@ -18,13 +18,10 @@
  * (easy to change)
  */
 #define CONFIG_S3C24X0		/* This is a SAMSUNG S3C24x0-type SoC */
-/*#define CONFIG_S3C2410*/		/* specifically a SAMSUNG S3C2410 SoC */
-/*#define CONFIG_SMDK2410*/		/* on a SAMSUNG SMDK2410 Board */
-
 #define CONFIG_S3C2440		/* specifically a SAMSUNG S3C2440 SoC */
 #define CONFIG_MINI2440		/* on a SAMSUNG SMDK2410 Board */
 
-#define CONFIG_SYS_TEXT_BASE	0x0
+#define CONFIG_SYS_TEXT_BASE	0x30008000
 
 #define CONFIG_SYS_ARM_CACHE_WRITETHROUGH
 
@@ -142,8 +139,12 @@
  * SPL boot
  */
 #ifdef CONFIG_SPL_BUILD
+#define CONFIG_SPL_NAND_SUPPORT
 #define CONFIG_SPL_NAND_BOOT
 #define CONFIG_SPL_MAX_SIZE 	(4096)
+#define CONFIG_SYS_NAND_U_BOOT_OFFS			4096ul
+#define CONFIG_SYS_NAND_U_BOOT_SIZE			(1 * 1024 * 1024)
+#define CONFIG_SYS_NAND_U_BOOT_DST			CONFIG_SYS_TEXT_BASE
 #endif
 
 /*-----------------------------------------------------------------------

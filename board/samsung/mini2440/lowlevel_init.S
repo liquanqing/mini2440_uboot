@@ -116,7 +116,7 @@ lowlevel_init:
 	/* make r0 relative the current location so that it */
 	/* reads SMRDATA out of FLASH rather than memory ! */
 	ldr     r0, =SMRDATA
-	ldr	r1, =CONFIG_SYS_TEXT_BASE
+	ldr	r1, =0
 	sub	r0, r0, r1
 	ldr	r1, =BWSCON	/* Bus Width Status Controller */
 	add     r2, r0, #13*4

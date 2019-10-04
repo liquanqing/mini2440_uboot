@@ -22,7 +22,16 @@
 #include <image.h>
 #include <linux/compiler.h>
 
+#ifndef CONFIG_SPL_DM
+/* Pointer to as well as the global data structure for SPL */
 DECLARE_GLOBAL_DATA_PTR;
+
+/*
+ * WARNING: This is going away very soon. Don't use it and don't submit
+ * pafches that rely on it. The global_data area is set up in crt0.S.
+ */
+gd_t gdata __attribute__ ((section(".data")));
+#endif
 
 #define FCLK_SPEED 1
 
@@ -139,7 +148,7 @@ ulong board_flash_get_legacy(ulong base, int banknum, flash_info_t *info)
 #define        UBRDIV0                             (*(volatile unsigned long *)0x50000028)
 
 /* use userial for test */
-void init_uart()
+void init_uart(void)
 {
    /*初始化端口*/
    GPHCON |= (0x2 << 6 | 0x2 << 4);
@@ -152,7 +161,7 @@ void init_uart()
 }
  
 /*接收一个字符*/
-char getchar()
+char getchar(void)
 {
   while(!(UTRSTAT0 & (0x1 << 0)));
   return URXH0;
@@ -177,14 +186,32 @@ void outstring(char* str)
 #ifdef CONFIG_SPL_BUILD
 void board_init_r(gd_t *dummy1, ulong dummy2)
 {
+	__attribute__((noreturn)) void (*uboot)(void);
+
 	init_uart();
 
 	outstring("hello !This is SPL booting");
+extern int copy_code_to_sdram(unsigned char *src, unsigned char *dest, unsigned int len);
+	copy_code_to_sdram((unsigned char *)(CONFIG_SYS_NAND_U_BOOT_OFFS), \
+						(unsigned char *)(CONFIG_SYS_NAND_U_BOOT_DST), \
+						CONFIG_SYS_NAND_U_BOOT_SIZE);
+
+	/*
+	 * Jump to U-Boot image
+	 */
+	uboot = (void *)CONFIG_SYS_NAND_U_BOOT_DST;
+	(*uboot)();
+
 	while(1);
 }
 
 void board_init_f(ulong dummy)
 {
+
+#ifndef CONFIG_SPL_DM
+	/* TODO: Remove settings of the global data pointer here */
+	gd = &gdata;
+#endif
 	board_init_r(NULL, 0);
 }
 #endif
