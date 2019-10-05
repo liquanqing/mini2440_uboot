@@ -42,7 +42,7 @@ fi
 
 if [ ${cmd_build} = y ];then
 	echo "build begin"
-	make ARCH=arm CROSS_COMPILE=arm-s3c2440-linux-gnueabi-
+	make ARCH=arm CROSS_COMPILE=arm-s3c2440-linux-gnueabi- V=s && gcc -o merge_mini2440 merge_spl_mini2440.c && ./merge_mini2440
 fi
 
 echo "######################"

@@ -86,6 +86,12 @@ int board_early_init_f(void)
 	return 0;
 }
 
+void enable_caches(void)
+{
+	icache_enable();
+	dcache_enable();
+}
+
 int board_init(void)
 {
 	/* arch number of SMDK2410-Board */
@@ -94,9 +100,6 @@ int board_init(void)
     
 	/* adress of boot parameters */
 	gd->bd->bi_boot_params = 0x30000100;
-
-	icache_enable();
-	dcache_enable();
 
 	return 0;
 }
